@@ -42,7 +42,7 @@ def write_user(user, passw):
         # Check if the username was already created
         query = conn.execute("SELECT user FROM usrdb WHERE user=?", (user,))
 
-        if len(query.fetchall() > 0):
+        if (len(query.fetchall()) > 0):
             conn.close()
             return -1  # User already exists
 
@@ -68,36 +68,3 @@ def read_users():
     conn.close()
 
     return t
-
-def test_cases():
-    password = "heilo_world"
-    keyword_linear = "aaaaaaa"
-    keyword_word = "superboiz"
-
-    assert(password == encrypt(keyword_linear,
-                               encrypt(keyword_linear, password),
-                               True))
-    assert(password == encrypt(keyword_word,
-                               encrypt(keyword_word, password),
-                               True))
-
-def r_test():
-    import random
-    for r in range(0, 100000):
-        # Generate random password
-        pwd = "".join([chr(random.randint(33, 122)) for c in range(0, 31)])
-        key = "".join([chr(random.randint(33, 122)) for c in range(0, 31)])
-
-        try:
-            assert(pwd == encrypt(key, encrypt(key, pwd), True))
-        except AssertionError:
-            print "ERROR! Failed test case:"
-            print "Password: %s" % (pwd)
-            print "Key: %s" % (key)
-            print "Original: "
-            for c1, c2 in zip(list(pwd), list(encrypt(key, encrypt(key, pwd), True))):
-                if c1 is not c2:
-                    print "Different chars: %c, %c" % (c1, c2)
-            pass
-
-    print "All tests pass!"
